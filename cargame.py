@@ -1,6 +1,14 @@
 
+'''yapılacaklar!!!
+her tur bitince, road objects yenilenecek
+her şeyi game ve classların içine atmamız lazım
+bullet vurunca kaybolsun, tekrar tekrar ateş edilebilsin
+diagramlar bunlara göre ayarlanacak
+opponent car yolu çizilecek
+ara yüz geliştirilecek
+level eklenecek
 
-
+'''
 
 
 from turtle import position
@@ -141,9 +149,46 @@ class OurCar(Vehicle):
         self.HP = 5
     START_POS = (300, 680)
 
+    def movecar(self):
+        keys = pygame.key.get_pressed()
+        moved = False
+        if keys[pygame.K_LEFT] :
+            self.rotate(left=True)
+        if keys[pygame.K_RIGHT] :
+            self.rotate(right=True)
+        if keys[pygame.K_DOWN] :
+            self.move_backward()
+            moved = True
+        if keys[pygame.K_UP] :
+            moved = True
+            self.move_forward()
+        if not moved:
+            self.reduce_speed()
+
+    
+
+    
+
 class Opponent_Car(Vehicle):
     IMG = green_car
     START_POS = (300,730)
+
+    def movecar(self):
+        keys = pygame.key.get_pressed()
+        moved = False 
+        if keys[pygame.K_a]:
+            self.rotate(left=True)
+        if keys[pygame.K_d]:
+            self.rotate(right=True)
+        if keys[pygame.K_s]:
+            self.move_backward()
+            moved = True
+        if keys[pygame.K_w]: 
+            moved = True
+            self.move_forward()
+
+        if not moved:
+            self.reduce_speed()
 
 class Road_Objects:
     
@@ -153,15 +198,15 @@ class Road_Objects:
         self.img = img
     
     def die(self):
-        images.pop(images.index((speed, (speed.x,speed.y))))
+        images.pop(images.index((self.img, (self.x,self.y))))
 class Boost(Road_Objects):
-    IMG = speed1
+    pass
     
 class Barrier(Road_Objects):
-    IMG = barrier1 
+    pass
     
 class Heart(Road_Objects):
-    IMG = heart1
+    pass
 class Bullet:
     IMG = bullet
     
@@ -205,47 +250,16 @@ game = Game()
 images = [(grass, (0, 0)), (track, (0, 0)),(score, (0, 0)),(finish, finish_position),
 (speed.img, (speed.x,speed.y)),(barrier.img, (barrier.x,barrier.y)),(track_border,(0,0)),(heart.img,(heart.x,heart.y))]
 
-def our_car_move(our_car):
-        
-    keys = pygame.key.get_pressed()
-    moved = False 
-    if keys[pygame.K_LEFT] :
-        our_car.rotate(left=True)
-    if keys[pygame.K_RIGHT] :
-        our_car.rotate(right=True)
-    if keys[pygame.K_DOWN] :
-        our_car.move_backward()
-        moved = True
-    if keys[pygame.K_UP] :
-        moved = True
-        our_car.move_forward()
 
-    if not moved:
-        our_car.reduce_speed()
 
-def opponent_car_move(opponent_car):
-    keys = pygame.key.get_pressed()
-    moved = False 
-    if keys[pygame.K_a]:
-        opponent_car.rotate(left=True)
-    if keys[pygame.K_d]:
-        opponent_car.rotate(right=True)
-    if keys[pygame.K_s]:
-        opponent_car.move_backward()
-        moved = True
-    if keys[pygame.K_w]: 
-        moved = True
-        opponent_car.move_forward()
-
-    if not moved:
-        opponent_car.reduce_speed()
-y = True
-x = False
+    
+y = True #bariyer için
+x = False 
 z = True
 t = True
 while run:
     clock.tick(FPS)
-   
+    our_car.score+=0.1
     draw(WIN, images, our_car, opponent_car)
     
     for event in pygame.event.get():
@@ -254,9 +268,9 @@ while run:
             break
     
 
-    our_car.score+=0.1
-    our_car_move(our_car)
-    opponent_car_move(opponent_car)
+    
+    our_car.movecar()
+    opponent_car.movecar()
     keys = pygame.key.get_pressed()
 
     
@@ -267,13 +281,15 @@ while run:
         firstspeed_x = our_car.horizontal
         firstspeed_y = our_car.vertical
         x = True
-    if x == True:
+    if x == True: 
         bullet1.draw(WIN)   
         bullet1.position_x -= firstspeed_x
         bullet1.position_y -= firstspeed_y
-        if (barrier.x-15) <= bullet1.position_x <= (barrier.x + 15) and  (barrier.y-50)<= bullet1.position_y <=(barrier.y+50):
-                
-                print("öl laaa")
+        if y == True: #bu sayede eğer barrier öldüyse ateş tekrar aynı yerden geçerse hata vermiyor.
+            if (barrier.x-15) <= bullet1.position_x <= (barrier.x + 15) and  (barrier.y-50)<= bullet1.position_y <=(barrier.y+50):            
+                print(images)
+                barrier.die()
+                x = False
                 y = False
             
 
