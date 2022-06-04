@@ -1,10 +1,10 @@
 
 '''yapılacaklar!!!
-her tur bitince, road objects yenilenecek
-her şeyi game ve classların içine atmamız lazım
-bullet vurunca kaybolsun, tekrar tekrar ateş edilebilsin
-diagramlar bunlara göre ayarlanacak
-opponent car yolu çizilecek
+
+her şeyi game ve classların içine atmamız lazım +
+bullet vurunca kaybolsun, tekrar tekrar ateş edilebilsin -
+diagramlar bunlara göre ayarlanacak -
+opponent car yolu çizilecek +
 ara yüz geliştirilecek
 level eklenecek
 '''
@@ -20,7 +20,7 @@ from funcs import scale_image, blit_rotate_center
 #[(118, 666), (103, 121), (275, 117), (603, 128), (674, 393), (300, 423), (316, 554), 
 #(767, 569), (804, 131), (1086, 104), (1129, 321), (932, 348), (947, 507), (1119, 523), (1108, 729), (363, 751)]  
 PATH = [(118, 666), (103, 121), (275, 117), (603, 128), (674, 393), (300, 423), (316, 554), 
-(767, 569), (804, 131), (1086, 104), (1129, 321), (932, 348), (947, 507), (1119, 523), (1108, 729), (363, 751)]  
+(767, 569), (804, 131), (1086, 104), (1129, 321), (932, 348), (947, 507), (1119, 523), (1108, 729), (363, 751),]  
 class Game:
     def __init__(self):
         a = 1.23
@@ -142,6 +142,7 @@ class Game:
                 if finish_poi_collide[0] ==0:
                     our_car.stop()
                 else:
+                    opponent_car.current_point = 0
                     our_car.restart()                  
                     opponent_car.restart()
                     opponent_car.move()
@@ -155,6 +156,7 @@ class Game:
                 if finish_poi_collide2[0] == 0:
                     opponent_car.stop()
                 else:
+                    opponent_car.current_point = 0
                     opponent_car.restart()
                     opponent_car.move()
                     our_car.restart()
@@ -165,11 +167,11 @@ class Game:
                     z = True
                     y = True
             if keys[pygame.K_p]:  
-                game.pause()
+                self.pause()
             if keys[pygame.K_r]:
-                game.resume()
-            if keys[pygame.K_m]:
-                game.exitgame()
+                self.resume()
+            if keys[pygame.K_ESCAPE]:
+                self.exitgame()
             if our_car.HP ==0:
                 self.exitgame()
                 print("game over")
@@ -375,8 +377,6 @@ class Road_Objects:
     def restartobjects(self):
         images.append((self.img,(self.x,self.y)))
 class Boost(Road_Objects):
-    #def restart4(self):
-     #   images.append((speed.img,(speed.x,speed.y)))
     pass   
 class Barrier(Road_Objects):  
     pass  
@@ -413,7 +413,6 @@ def draw(win, images, our_car, opponent_car):
 clock = pygame.time.Clock()
 our_car = OurCar(5, 4)
 opponent_car = Opponent_Car(4, 4,PATH)
-
 barrier = Barrier(613,500,game.barrier1)
 speed = Boost(125,250,game.speed1)
 heart = Heart(750,700,game.heart1)
@@ -423,5 +422,5 @@ images = [(game.grass, (0, 0)), (game.track, (0, 0)),(game.score, (0, 0)),(game.
 
 game.play()
 
-print(opponent_car.path)
+#print(opponent_car.path)
 print(our_car.score)
